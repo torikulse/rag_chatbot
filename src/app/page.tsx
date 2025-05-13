@@ -9,11 +9,9 @@ import {
 } from "react-icons/bs";
 import { ImSpinner6 } from "react-icons/im";
 
-export default function page() {
+export default function Home() {
   // all useState
   const [question, setQuestion] = useState("");
-  const [file, setFile] = useState("");
-  const [answer, setAnswer] = useState("loading...");
   const [isSending, setIsSending] = useState(false);
   const [isGettingRes, setIsgettingRes] = useState(false);
 
