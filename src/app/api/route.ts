@@ -1,7 +1,5 @@
 export async function POST(req: Request) {
-  const body = await req.json();
-
-  console.log(body);
+  const { q } = await req.json();
 
   const fetchData = await fetch(
     "https://openrouter.ai/api/v1/chat/completions",
@@ -19,7 +17,7 @@ export async function POST(req: Request) {
             content: [
               {
                 type: "text",
-                text: body.q,
+                text: q,
               },
             ],
           },
