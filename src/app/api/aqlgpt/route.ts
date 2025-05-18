@@ -1,4 +1,5 @@
 import { deleteDocuments, similaritySearch, splitter } from "./ab";
+import { geminiModel } from "./aiModel";
 // GET request
 export async function GET(request: Request) {
   const { searchParams } = new URL(request.url);
@@ -6,18 +7,28 @@ export async function GET(request: Request) {
   if (!prompt) {
     return Response.json({ message: "Please Enter prompt" });
   }
-  const response = await similaritySearch(prompt);
-  return Response.json({ output: response });
+
+  const similarData = await similaritySearch(prompt);
+  console.log(similarData);
+  
+  const response = await geminiModel(prompt, similarData);
+
+  return Response.json({ answer: response.choices[0].message.content });
 }
 
 // POST request
 export async function POST(request: Request) {
+  const { searchParams } = new URL(request.url);
+  const source = searchParams.get("source");
+
   const body = await request.json();
   const { text_content } = body;
-  if (!text_content) {
-    return Response.json({ message: "text content is required!" });
+
+  if (!source || !text_content) {
+    return Response.json({ message: "Source and text_content is required!" });
   }
-  const response = await splitter(text_content);
+
+  const response = await splitter(text_content, source);
   return Response.json({
     message: "uploaded successfully",
     documentIDs: response,

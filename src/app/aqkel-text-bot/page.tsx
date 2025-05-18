@@ -22,12 +22,13 @@ export default function Home() {
   useEffect(() => {
     if (isSending) {
       async function fetchData() {
-        const response = await fetch("http://localhost:3000/api", {
+        const response = await fetch("http://localhost:3000/api/aqlgpt", {
           method: "POST",
-          body: JSON.stringify({ q: question }),
+          body: JSON.stringify({ prompt: question }),
         });
         const data = await response.json();
-        setData(data);
+        console.log(data);
+        // setData(data);
       }
       fetchData();
 

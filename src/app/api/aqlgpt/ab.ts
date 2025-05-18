@@ -18,13 +18,13 @@ const vectorStore = new Chroma(embeddings, {
   collectionName: "aqlgpt",
 });
 
-export async function splitter(text_content: string) {
+export async function splitter(text_content: string, source: string) {
   const allSplit = await splitterr.splitText(text_content);
 
   const documents = allSplit.map((item) => {
     const doc = new Document({
       pageContent: item,
-      metadata: { source: "text" },
+      metadata: { source: source },
     });
     return doc;
   });
@@ -33,7 +33,10 @@ export async function splitter(text_content: string) {
 }
 
 export async function similaritySearch(propmt: string) {
-  const response = await vectorStore.similaritySearch(propmt, 2);
+  const similarData = await vectorStore.similaritySearch(propmt, 1);
+  const response = similarData.map((item) => {
+    return item.pageContent;
+  });
   return response;
 }
 
