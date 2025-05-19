@@ -9,6 +9,7 @@ import {
 } from "react-icons/bs";
 import { ImSpinner6 } from "react-icons/im";
 import type { ChatMessage } from "./types/types";
+import MessageOutput from "@/Component/MessageOutput";
 
 export default function Home() {
   const [question, setQuestion] = useState("");
@@ -22,23 +23,18 @@ export default function Home() {
   useEffect(() => {
     if (isSending) {
       async function fetchData() {
-        const response = await fetch("http://localhost:3000/api/aqlgpt", {
-          method: "POST",
-          body: JSON.stringify({ prompt: question }),
-        });
+        const response = await fetch(
+          `http://localhost:3000/api/aqlgpt?prompt=${question}`
+        );
         const data = await response.json();
         console.log(data);
-        // setData(data);
+        setData(data);
       }
-      fetchData();
-
-      const timeout = setTimeout(() => {
+      fetchData().then(() => {
         setIsEmptyChat(false);
         setIsgettingRes(true);
         setIsSending(false);
-      }, 2000);
-
-      return () => clearTimeout(timeout);
+      });
     }
   }, [isSending]);
 
@@ -47,14 +43,9 @@ export default function Home() {
       setQuestion("");
       setAllChat((prev) => [
         ...prev,
-        { userPrompt: question, aiAnswer: data?.choices[0].message.content },
+        { userPrompt: question, aiAnswer: data.answer },
       ]);
-
-      const timeout = setTimeout(() => {
-        setIsgettingRes(false);
-      }, 3000);
-
-      return () => clearTimeout(timeout);
+      setIsgettingRes(false);
     }
   }, [isGettingRes]);
 
@@ -70,12 +61,7 @@ export default function Home() {
         }`}
       >
         {allChat.map((item, index) => {
-          return (
-            <>
-              <DisplayUerPrompt key={index} content={item.userPrompt} />
-              <DisplayAiAnswer key={index + 90} content={item.aiAnswer} />
-            </>
-          );
+          return <MessageOutput key={index} item={item} />;
         })}
       </div>
       <h1
@@ -101,13 +87,13 @@ export default function Home() {
             placeholder="Ask anything"
             className="block w-full text-xl outline-0"
           />
-          <div className="mt-4 flex items-center justify-between">
-            <input type="file" ref={fileInputRef} className="hidden" />
-            <button className="cursor-pointer text-slate-500 hover:text-slate-600">
+          <div className="mt-4 flex items-center justify-end">
+            {/* <input type="file" ref={fileInputRef} className="hidden" /> */}
+            {/* <button className="cursor-pointer text-slate-500 hover:text-slate-600">
               <BsPlusCircle size={28} />
-            </button>
+            </button> */}
+            {/* <div className="absolute top-0 left-8 text-slate-500">ooooo</div> */}
 
-            <div className="absolute top-0 left-8 text-slate-500"></div>
             {isSending ? (
               <button className="rounded-full bg-slate-800 p-1 text-slate-50">
                 <ImSpinner6 size={22} className="animate-spin" />

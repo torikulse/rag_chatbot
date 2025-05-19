@@ -10,3 +10,8 @@ export type ChatMessage = {
   userPrompt: string;
   aiAnswer: string;
 };
+
+export interface MessageOutput {
+  userPrompt: string;
+  aiAnswer: string;
+}
